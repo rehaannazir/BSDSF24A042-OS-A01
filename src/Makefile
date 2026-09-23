@@ -2,22 +2,34 @@ CC := gcc
 AR := ar
 RANLIB := ranlib
 CFLAGS := -Wall -Wextra -Werror -std=c11 -D_POSIX_C_SOURCE=200809L -I../include
-TARGET := ../bin/client_static
-LIBRARY := ../lib/libmyutils.a
+STATIC_TARGET := ../bin/client_static
+DYNAMIC_TARGET := ../bin/client_dynamic
+STATIC_LIBRARY := ../lib/libmyutils.a
+SHARED_LIBRARY := ../lib/libmyutils.so
 LIB_SOURCES := mystrfunctions.c myfilefunctions.c
 LIB_OBJECTS := $(LIB_SOURCES:%.c=../obj/%.o)
+PIC_OBJECTS := $(LIB_SOURCES:%.c=../obj/%.pic.o)
 MAIN_OBJECT := ../obj/main.o
 
-.PHONY: all clean run directories
+.PHONY: all clean run run-dynamic directories
 
-all: $(TARGET)
+all: $(STATIC_TARGET) $(DYNAMIC_TARGET)
 
-$(TARGET): $(MAIN_OBJECT) $(LIBRARY) | directories
+$(STATIC_TARGET): $(MAIN_OBJECT) $(STATIC_LIBRARY) | directories
+	$(CC) $(MAIN_OBJECT) $(STATIC_LIBRARY) -o $@
+
+$(DYNAMIC_TARGET): $(MAIN_OBJECT) $(SHARED_LIBRARY) | directories
 	$(CC) $(MAIN_OBJECT) -L../lib -lmyutils -o $@
 
-$(LIBRARY): $(LIB_OBJECTS) | directories
+$(STATIC_LIBRARY): $(LIB_OBJECTS) | directories
 	$(AR) rcs $@ $(LIB_OBJECTS)
 	$(RANLIB) $@
+
+$(SHARED_LIBRARY): $(PIC_OBJECTS) | directories
+	$(CC) -shared $(PIC_OBJECTS) -o $@
+
+../obj/%.pic.o: %.c | directories
+	$(CC) $(CFLAGS) -fPIC -c $< -o $@
 
 ../obj/%.o: %.c | directories
 	$(CC) $(CFLAGS) -c $< -o $@
@@ -25,8 +37,12 @@ $(LIBRARY): $(LIB_OBJECTS) | directories
 directories:
 	mkdir -p ../obj ../bin ../lib
 
-run: $(TARGET)
-	$(TARGET)
+run: $(STATIC_TARGET)
+	$(STATIC_TARGET)
+
+run-dynamic: $(DYNAMIC_TARGET)
+	LD_LIBRARY_PATH=$(abspath ../lib) $(DYNAMIC_TARGET)
 
 clean:
-	rm -f $(LIB_OBJECTS) $(MAIN_OBJECT) $(LIBRARY) $(TARGET)
+	rm -f $(LIB_OBJECTS) $(PIC_OBJECTS) $(MAIN_OBJECT) \
+		$(STATIC_LIBRARY) $(SHARED_LIBRARY) $(STATIC_TARGET) $(DYNAMIC_TARGET)
