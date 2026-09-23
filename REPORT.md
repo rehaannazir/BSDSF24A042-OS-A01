@@ -19,3 +19,17 @@ A Git tag is a permanent name attached to a particular commit, normally used to 
 ### GitHub Releases and binary assets
 
 A GitHub Release presents a tagged version as a downloadable, documented software release. Its title and notes explain what the version contains. Attaching the compiled `client` binary allows a Linux user to run that build without compiling the C source code first. The tag identifies the exact source version from which the binary was built.
+
+## Part 3: Static Library
+
+### How the Makefile changed
+
+In Part 2, the executable depended on all three object files and linked them directly. In Part 3, `LIB_OBJECTS` contains only the string and file modules. The `$(LIBRARY)` rule archives those two objects as `lib/libmyutils.a`; the client rule depends on that archive and `main.o`. Its link command uses `-L../lib` to choose the library directory and `-lmyutils` to select `libmyutils.a`. Changing either utility source rebuilds the archive and then relinks the client.
+
+### `ar` and `ranlib`
+
+`ar` stores multiple object files in one static library archive. `ranlib` creates or refreshes the archive's symbol index, which helps the linker find definitions inside it. On GNU systems, `ar rcs` already writes that index; this Makefile also calls `ranlib` explicitly to make the step visible.
+
+### Symbols in `client_static`
+
+`nm bin/client_static` shows definitions such as `mystrlen`, `mygrep`, and `wordCount` in the final executable. The linker copied the required object code from `libmyutils.a` into the executable at build time. Consequently, the program does not need the `.a` file at runtime.
