@@ -33,3 +33,17 @@ In Part 2, the executable depended on all three object files and linked them dir
 ### Symbols in `client_static`
 
 `nm bin/client_static` shows definitions such as `mystrlen`, `mygrep`, and `wordCount` in the final executable. The linker copied the required object code from `libmyutils.a` into the executable at build time. Consequently, the program does not need the `.a` file at runtime.
+
+## Part 4: Dynamic Library
+
+### Position-independent code (`-fPIC`)
+
+The shared library's object files are compiled with `-fPIC`, so their machine code can run regardless of where the dynamic loader maps `libmyutils.so` in a process. This lets the same shared object be loaded at different addresses without rewriting its code pages. The Makefile keeps separate `.pic.o` objects for the shared library and ordinary `.o` objects for the static archive.
+
+### Static and dynamic client sizes
+
+On this Linux build, `bin/client_static` is 16,968 bytes and `bin/client_dynamic` is 16,624 bytes: the dynamic client is 344 bytes smaller (about 2%). The static client contains the selected utility object code from `libmyutils.a`; the dynamic client mainly records a dependency on `libmyutils.so` and resolves those functions when it runs. The difference is modest here because this utility library is small, and executable metadata and C runtime dependencies account for much of both files. A larger library or different compiler settings could produce a larger gap.
+
+### `LD_LIBRARY_PATH` and the dynamic loader
+
+`LD_LIBRARY_PATH` is a list of directories the Linux dynamic loader searches for shared libraries. Without the project `lib/` directory in that path, `./bin/client_dynamic` fails because `libmyutils.so` cannot be found. After setting `LD_LIBRARY_PATH` to include the project's `lib/`, all six client tests pass. `ldd bin/client_dynamic` then shows `libmyutils.so` resolving to this repository's `lib/libmyutils.so`. This demonstrates that the executable identifies its needed shared library, while the loader must locate and load the actual file at runtime.
