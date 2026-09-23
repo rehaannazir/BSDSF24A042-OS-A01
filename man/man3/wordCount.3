@@ -1,0 +1,29 @@
+.TH WORDCOUNT 3 "September 2026" "libmyutils" "Library Functions"
+.SH NAME
+wordCount \- count newlines, words, and characters in a file stream
+.SH SYNOPSIS
+.nf
+#include <stdio.h>
+#include <myfilefunctions.h>
+
+int wordCount(FILE *file, int *lines, int *words, int *chars);
+.fi
+.SH DESCRIPTION
+.B wordCount
+reads from the current position of
+.I file
+until end-of-file. It stores the number of newline characters in
+.IR lines ,
+whitespace-separated words in
+.IR words ,
+and bytes read in
+.IR chars .
+Each output count is reset to zero before reading. A final line without
+a newline does not increase the line count.
+.SH RETURN VALUE
+Returns 0 on success and -1 for a NULL argument or stream read error.
+.SH AUTHOR
+Rehaan Nazir <rehaan689nazir@gmail.com>
+.SH SEE ALSO
+.BR mygrep (3),
+.BR client (1)

@@ -34,3 +34,24 @@ ldd bin/client_dynamic
 ```
 
 `make run-dynamic` performs the library-path setup for one run.
+
+## Part 5: Manual Pages and Installation
+
+On the `man-pages` branch, the application has a section 1 manual page at
+`man/man1/client.1`. Each of the six library functions has a section 3 page
+under `man/man3/`. Preview a page before installation with, for example,
+`man -l man/man3/mygrep.3`.
+
+Install the dynamic client, shared library, and manual pages on Linux with:
+
+```bash
+make
+sudo make install
+client
+man client
+man mygrep
+```
+
+The install target uses `/usr/local` by default and refreshes the dynamic
+loader cache. It also accepts `PREFIX` and `DESTDIR` for alternate or staged
+installation paths.

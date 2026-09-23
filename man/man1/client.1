@@ -1,0 +1,25 @@
+.TH CLIENT 1 "September 2026" "libmyutils" "User Commands"
+.SH NAME
+client \- test the libmyutils string and file functions
+.SH SYNOPSIS
+.B client
+.SH DESCRIPTION
+.B client
+runs checks for four string functions and two file functions, then prints
+PASS or FAIL for each check. It creates a temporary file for the file tests.
+No command-line arguments are required.
+.PP
+The installed program uses the shared library
+.BR libmyutils.so ,
+which must be available to the Linux dynamic loader.
+.SH EXIT STATUS
+Returns 0 when all checks pass and a nonzero status if a check or setup fails.
+.SH AUTHOR
+Rehaan Nazir <rehaan689nazir@gmail.com>
+.SH SEE ALSO
+.BR mystrlen (3),
+.BR mystrcpy (3),
+.BR mystrncpy (3),
+.BR mystrcat (3),
+.BR wordCount (3),
+.BR mygrep (3)
