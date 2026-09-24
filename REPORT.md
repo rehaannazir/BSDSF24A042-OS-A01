@@ -47,3 +47,15 @@ On this Linux build, `bin/client_static` is 16,968 bytes and `bin/client_dynamic
 ### `LD_LIBRARY_PATH` and the dynamic loader
 
 `LD_LIBRARY_PATH` is a list of directories the Linux dynamic loader searches for shared libraries. Without the project `lib/` directory in that path, `./bin/client_dynamic` fails because `libmyutils.so` cannot be found. After setting `LD_LIBRARY_PATH` to include the project's `lib/`, all six client tests pass. `ldd bin/client_dynamic` then shows `libmyutils.so` resolving to this repository's `lib/libmyutils.so`. This demonstrates that the executable identifies its needed shared library, while the loader must locate and load the actual file at runtime.
+
+## Part 5: Manual Pages and Installation
+
+The executable's manual is `man/man1/client.1` (section 1), while all six library function manuals are in `man/man3/` (section 3). Each page includes the required title, name, synopsis, description, and author sections. The function pages also document return values and important details such as destination-buffer capacity and ownership of memory returned by `mygrep`.
+
+The top-level `install` target copies `bin/client_dynamic` to `/usr/local/bin/client`, `lib/libmyutils.so` to `/usr/local/lib/`, and the manual pages to `/usr/local/share/man/man1/` and `man3/`. It then refreshes the dynamic loader cache with `ldconfig`. After installation, running `client` from `/tmp` passed all six checks without setting `LD_LIBRARY_PATH`. `ldd /usr/local/bin/client` resolved `libmyutils.so` from `/usr/local/lib/`, and `man client` plus all six function page lookups succeeded.
+
+## Part 6: Final Review and Submission
+
+The development history is preserved in four feature branches: `multifile-build`, `static-build`, `dynamic-build`, and `man-pages`. Each branch records one stage of the build process, while `main` brings the completed stages together. The annotated tags `v0.1.1-multifile`, `v0.2.1-static`, `v0.3.1-dynamic`, and `v0.4.1-final` identify the corresponding releases. These tags are snapshots of the feature stages; the final `main` branch contains the complete project, including the manual pages and installation target.
+
+The key distinction demonstrated by the assignment is when library code becomes part of the program. A direct multi-file build links the utility objects with the client. A static library packages those objects first, then copies the needed code into the client at link time. A shared library keeps that code in a separate `.so` file, which the loader locates at runtime. The final installation makes both the executable and its shared-library dependency available system-wide and installs their documentation in the standard manual-page locations.

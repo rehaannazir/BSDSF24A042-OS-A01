@@ -1,0 +1,28 @@
+.TH MYSTRCAT 3 "September 2026" "libmyutils" "Library Functions"
+.SH NAME
+mystrcat \- append one C string to another
+.SH SYNOPSIS
+.nf
+#include <mystrfunctions.h>
+
+int mystrcat(char *dest, const char *src);
+.fi
+.SH DESCRIPTION
+.B mystrcat
+appends
+.I src
+to the end of the null-terminated string in
+.IR dest .
+The result is null-terminated. The caller must provide enough space in
+.I dest
+for both strings and the terminator. Source and destination must not
+overlap.
+.SH RETURN VALUE
+Returns the total length of the resulting string, excluding the
+terminator. Returns -1 if either pointer is NULL.
+.SH AUTHOR
+Rehaan Nazir <rehaan689nazir@gmail.com>
+.SH SEE ALSO
+.BR mystrlen (3),
+.BR mystrcpy (3),
+.BR mystrncpy (3)

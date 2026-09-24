@@ -1,0 +1,24 @@
+.TH MYSTRLEN 3 "September 2026" "libmyutils" "Library Functions"
+.SH NAME
+mystrlen \- count characters in a C string
+.SH SYNOPSIS
+.nf
+#include <mystrfunctions.h>
+
+int mystrlen(const char *s);
+.fi
+.SH DESCRIPTION
+.B mystrlen
+counts characters in the null-terminated string
+.I s
+without counting its terminating null byte.
+.SH RETURN VALUE
+Returns the character count, or -1 if
+.I s
+is NULL.
+.SH AUTHOR
+Rehaan Nazir <rehaan689nazir@gmail.com>
+.SH SEE ALSO
+.BR mystrcpy (3),
+.BR mystrncpy (3),
+.BR mystrcat (3)

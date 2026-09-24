@@ -1,0 +1,35 @@
+.TH MYSTRNCPY 3 "September 2026" "libmyutils" "Library Functions"
+.SH NAME
+mystrncpy \- copy at most n characters and terminate the result
+.SH SYNOPSIS
+.nf
+#include <mystrfunctions.h>
+
+int mystrncpy(char *dest, const char *src, int n);
+.fi
+.SH DESCRIPTION
+.B mystrncpy
+copies at most
+.I n
+characters from
+.I src
+to
+.IR dest .
+It always writes a terminating null byte after the copied characters.
+The destination therefore needs room for at least
+.I n + 1
+bytes when the source is long enough. Unlike the standard C
+.BR strncpy (3),
+this function does not pad unused space with null bytes. Source and
+destination must not overlap.
+.SH RETURN VALUE
+Returns the number of characters copied, excluding the terminator.
+Returns -1 if a pointer is NULL or
+.I n
+is negative.
+.SH AUTHOR
+Rehaan Nazir <rehaan689nazir@gmail.com>
+.SH SEE ALSO
+.BR mystrlen (3),
+.BR mystrcpy (3),
+.BR mystrcat (3)

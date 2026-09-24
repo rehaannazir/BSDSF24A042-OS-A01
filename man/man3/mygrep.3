@@ -1,0 +1,31 @@
+.TH MYGREP 3 "September 2026" "libmyutils" "Library Functions"
+.SH NAME
+mygrep \- collect file lines containing a substring
+.SH SYNOPSIS
+.nf
+#include <stdio.h>
+#include <myfilefunctions.h>
+
+int mygrep(FILE *fp, const char *search_str, char ***matches);
+.fi
+.SH DESCRIPTION
+.B mygrep
+reads from the current position of
+.I fp
+to end-of-file and finds lines containing
+.IR search_str .
+Matching is case-sensitive. It allocates a copy of each matching line and
+stores the copies in the array returned through
+.IR matches .
+The caller must free every copied line and then the array itself. If no
+line matches,
+.I *matches
+is NULL. An empty search string matches every line.
+.SH RETURN VALUE
+Returns the number of matching lines, or -1 for a NULL argument,
+allocation failure, or stream read error.
+.SH AUTHOR
+Rehaan Nazir <rehaan689nazir@gmail.com>
+.SH SEE ALSO
+.BR wordCount (3),
+.BR client (1)
